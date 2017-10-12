@@ -6,9 +6,9 @@ namespace CRUD_DDD.MVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IServices<CustomerViewModel> _services;
+        private readonly ICustomerServices _services;
 
-        public HomeController(IServices<CustomerViewModel> services)
+        public HomeController(ICustomerServices services)
         {
             _services = services;
         }
