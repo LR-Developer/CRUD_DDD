@@ -15,11 +15,13 @@ namespace CRUD_DDD.MVC.ViewModels
         [DisplayName("Nome")]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "Preencha o campo Data de Nascimento.")]
+        //Comentei para funcionar o não obrigatório do ApplicationService
+        //Lembrando que DateTime sem o ?, o Required nunca irá validar no backend, pois DateTime tem valor default.
+        //[Required(ErrorMessage = "Preencha o campo Data de Nascimento.")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         [DisplayName("Data de Nascimento")]
-        public DateTime Birth { get; set; }
+        public DateTime? Birth { get; set; }
 
         [Required(ErrorMessage = "Selecione uma opção.")]
         [DisplayName("Gênero")]

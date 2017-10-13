@@ -5,7 +5,7 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace CRUD_DDD.Infra.Contexts
 {
-    class CrudDddContext : DbContext
+    public class CrudDddContext : DbContext
     {
         public CrudDddContext()
             : base("CrudDddDb")

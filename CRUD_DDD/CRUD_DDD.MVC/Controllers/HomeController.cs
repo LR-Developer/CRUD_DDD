@@ -1,20 +1,18 @@
 ﻿using AutoMapper;
-using CRUD_DDD.Domain.Contracts.Services;
-using CRUD_DDD.Domain.Entities;
 using CRUD_DDD.MVC.ViewModels;
+using CRUD_DDD.Services.Customers;
 using Rotativa.MVC;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Printing;
 using System.Web.Mvc;
 
 namespace CRUD_DDD.MVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ICustomerServices _services;
+        private readonly ICustomerService _services;
 
-        public HomeController(ICustomerServices services)
+        public HomeController(ICustomerService services)
         {
             _services = services;
         }
@@ -22,7 +20,7 @@ namespace CRUD_DDD.MVC.Controllers
         // GET: Home
         public ActionResult Index(Boolean? genReport)
         {
-            var customerViewModel = Mapper.Map<IEnumerable<Customer>, IEnumerable<CustomerViewModel>>(_services.GetAll());
+            var customerViewModel = Mapper.Map<IEnumerable<CustomerDto>, IEnumerable<CustomerViewModel>>(_services.GetAll());
 
             if (genReport != true)
             {
@@ -42,7 +40,7 @@ namespace CRUD_DDD.MVC.Controllers
 
         public ActionResult CustomersList()
         {
-            var customerViewModel = Mapper.Map<IEnumerable<Customer>, IEnumerable<CustomerViewModel>>(_services.GetAll());
+            var customerViewModel = Mapper.Map<IEnumerable<CustomerDto>, IEnumerable<CustomerViewModel>>(_services.GetAll());
 
             return View();
         }
@@ -62,8 +60,8 @@ namespace CRUD_DDD.MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var customerDomain = Mapper.Map<CustomerViewModel, Customer>(customer);
-                _services.Add(customerDomain);
+                var dto = Mapper.Map<CustomerViewModel, CustomerDto>(customer);
+                _services.Add(dto);
 
                 return RedirectToAction("Index");
             }
@@ -74,8 +72,8 @@ namespace CRUD_DDD.MVC.Controllers
         // GET: Home/Edit/5
         public ActionResult Edit(int id)
         {
-            var customer = _services.GetById(id);
-            var customerViewModel = Mapper.Map<Customer, CustomerViewModel>(customer);
+            var dto = _services.Find(id);
+            var customerViewModel = Mapper.Map<CustomerDto, CustomerViewModel>(dto);
             return View(customerViewModel);
         }
 
@@ -85,8 +83,8 @@ namespace CRUD_DDD.MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var customerDomain = Mapper.Map<CustomerViewModel, Customer>(customer);
-                _services.Update(customerDomain);
+                var dto = Mapper.Map<CustomerViewModel, CustomerDto>(customer);
+                _services.Update(customer.Id, dto);
 
                 return RedirectToAction("Index");
             }
@@ -97,8 +95,8 @@ namespace CRUD_DDD.MVC.Controllers
         // GET: Home/Delete/5
         public ActionResult Delete(int id)
         {
-            var customer = _services.GetById(id);
-            var customerViewModel = Mapper.Map<Customer, CustomerViewModel>(customer);
+            var dto = _services.Find(id);
+            var customerViewModel = Mapper.Map<CustomerDto, CustomerViewModel>(dto);
             return View(customerViewModel);
         }
 
@@ -109,9 +107,7 @@ namespace CRUD_DDD.MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var customer = _services.GetById(id);
-                _services.Remove(customer);
-
+                _services.RemoveBy(id);
                 return RedirectToAction("Index");
             }
 

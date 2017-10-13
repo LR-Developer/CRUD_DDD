@@ -13,7 +13,7 @@ namespace CRUD_DDD.Infra.EntityConfig
                 .IsRequired()
                 .HasMaxLength(100);
 
-            Property(c => c.Birth)
+            Property(c => c.BirthDate)
                 .IsRequired();
 
             Property(c => c.Gender)

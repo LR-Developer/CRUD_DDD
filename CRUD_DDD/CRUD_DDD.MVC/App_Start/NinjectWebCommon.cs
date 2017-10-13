@@ -10,25 +10,25 @@ namespace CRUD_DDD.MVC.App_Start
 
     using Ninject;
     using Ninject.Web.Common;
-    using Services;
-    using Domain.Contracts.Services;
     using Infra.Repositories;
-    using Domain.Contracts.Repositories;
+    using CRUD_DDD.Domain.Contracts.Repositories;
+    using CRUD_DDD.Services;
+    using CRUD_DDD.Services.Customers;
 
-    public static class NinjectWebCommon 
+    public static class NinjectWebCommon
     {
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
 
         /// <summary>
         /// Starts the application
         /// </summary>
-        public static void Start() 
+        public static void Start()
         {
             DynamicModuleUtility.RegisterModule(typeof(OnePerRequestHttpModule));
             DynamicModuleUtility.RegisterModule(typeof(NinjectHttpModule));
             bootstrapper.Initialize(CreateKernel);
         }
-        
+
         /// <summary>
         /// Stops the application.
         /// </summary>
@@ -36,7 +36,7 @@ namespace CRUD_DDD.MVC.App_Start
         {
             bootstrapper.ShutDown();
         }
-        
+
         /// <summary>
         /// Creates the kernel that will manage your application.
         /// </summary>
@@ -65,10 +65,16 @@ namespace CRUD_DDD.MVC.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            kernel.Bind(typeof(IServices<>)).To(typeof(Services<>));
-            kernel.Bind<ICustomerServices>().To<CustomerServices>();
+            //O transaction não é utilizado por injeção, pois ele está encapsulado com o context, mas é uma opção também.
+            kernel.Bind<ITransaction>().To<Transaction>();
+            //--------------------------//
+
+            kernel.Bind<IUnitOfWork>().To<UnitOfWork>();
+            kernel.Bind(typeof(ITransaction)).To<Transaction>();
+            kernel.Bind(typeof(IServiceBase<,,,>)).To(typeof(ServiceBase<,,,,>));
+            kernel.Bind<ICustomerService>().To<CustomerService>();
             kernel.Bind(typeof(IRepository<>)).To(typeof(Repository<>));
             kernel.Bind<ICustomerRepository>().To<CustomerRepository>();
-        }        
+        }
     }
 }

@@ -1,19 +1,40 @@
-﻿using System.Collections.Generic;
+﻿using CRUD_DDD.Domain.Contracts.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CRUD_DDD.Domain.Contracts.Repositories
 {
-    public interface IRepository<TEntity> where TEntity : class
+    public interface IRepository<TEntity>
+        : IDisposable
+        where TEntity : class, IAggregateRoot
     {
-        void Add(TEntity obj);
+        TEntity Find(object key);
+        IQueryable<TEntity> AsQueryable();
 
-        IEnumerable<TEntity> GetAll();
+        void Add(TEntity entity);
+        void Update(TEntity entity);
+        void Remove(TEntity entity);
 
-        TEntity GetById(int id);
+        void AddRange(IEnumerable<TEntity> entities);
+        void UpdateRange(IEnumerable<TEntity> entities);
+        void RemoveRange(IEnumerable<TEntity> entities);
+    }
 
-        void Update(TEntity obj);
+    /// <summary>
+    /// Criei este repositório genérico por propriedades para mostrar outro cenário possível.
+    /// </summary>
+    public interface IRepository
+    {
+        TEntity Find<TEntity>(object key) where TEntity : class, IAggregateRoot;
+        IQueryable<TEntity> AsQueryable<TEntity>() where TEntity : class, IAggregateRoot;
 
-        void Remove(TEntity obj);
+        void Add<TEntity>(TEntity entity) where TEntity : class, IAggregateRoot;
+        void Update<TEntity>(TEntity entity) where TEntity : class, IAggregateRoot;
+        void Remove<TEntity>(TEntity entity) where TEntity : class, IAggregateRoot;
 
-        void Dispose();
+        void AddRange<TEntity>(IEnumerable<TEntity> entities) where TEntity : class, IAggregateRoot;
+        void UpdateRange<TEntity>(IEnumerable<TEntity> entities) where TEntity : class, IAggregateRoot;
+        void RemoveRange<TEntity>(IEnumerable<TEntity> entities) where TEntity : class, IAggregateRoot;
     }
 }

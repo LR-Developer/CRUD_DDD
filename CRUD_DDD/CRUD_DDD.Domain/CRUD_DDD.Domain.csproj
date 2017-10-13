@@ -40,14 +40,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\Entities\IAggregateRoot.cs" />
     <Compile Include="Contracts\Repositories\ICustomerRepository.cs" />
     <Compile Include="Contracts\Repositories\IRepository.cs" />
-    <Compile Include="Contracts\Services\ICustomerServices.cs" />
-    <Compile Include="Contracts\Services\IServices.cs" />
+    <Compile Include="Contracts\Repositories\IUnitOfWork.cs" />
     <Compile Include="Entities\Customer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Contracts\Services\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
