@@ -1,5 +1,11 @@
-﻿using CRUD_DDD.Domain.Contracts.Services;
+﻿using AutoMapper;
+using CRUD_DDD.Domain.Contracts.Services;
+using CRUD_DDD.Domain.Entities;
 using CRUD_DDD.MVC.ViewModels;
+using Rotativa.MVC;
+using System;
+using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Web.Mvc;
 
 namespace CRUD_DDD.MVC.Controllers
@@ -14,82 +20,102 @@ namespace CRUD_DDD.MVC.Controllers
         }
 
         // GET: Home
-        public ActionResult Index()
+        public ActionResult Index(Boolean? genReport)
         {
-            var customerViewModel = _services.GetAll();
-            return View();
+            var customerViewModel = Mapper.Map<IEnumerable<Customer>, IEnumerable<CustomerViewModel>>(_services.GetAll());
+
+            if (genReport != true)
+            {
+                return View(customerViewModel);
+            }
+            else
+            {
+                var pdf = new ViewAsPdf
+                {
+                    ViewName = "CustomersList",
+                    Model = customerViewModel
+                };
+
+                return pdf;
+            }
         }
 
-        // GET: Home/Details/5
-        public ActionResult Details(int id)
+        public ActionResult CustomersList()
         {
+            var customerViewModel = Mapper.Map<IEnumerable<Customer>, IEnumerable<CustomerViewModel>>(_services.GetAll());
+
             return View();
         }
 
         // GET: Home/Create
         public ActionResult Create()
         {
+            string[] genders = { "Masculino", "Feminino", "Não desejo informar" };
+            ViewBag.Genders = new SelectList(genders);
             return View();
         }
 
         // POST: Home/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(CustomerViewModel customer)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add insert logic here
+                var customerDomain = Mapper.Map<CustomerViewModel, Customer>(customer);
+                _services.Add(customerDomain);
 
                 return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
+
+            return View(customer);
         }
 
         // GET: Home/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var customer = _services.GetById(id);
+            var customerViewModel = Mapper.Map<Customer, CustomerViewModel>(customer);
+            return View(customerViewModel);
         }
 
         // POST: Home/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(CustomerViewModel customer)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add update logic here
+                var customerDomain = Mapper.Map<CustomerViewModel, Customer>(customer);
+                _services.Update(customerDomain);
 
                 return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
+
+            return View();
         }
 
         // GET: Home/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var customer = _services.GetById(id);
+            var customerViewModel = Mapper.Map<Customer, CustomerViewModel>(customer);
+            return View(customerViewModel);
         }
 
         // POST: Home/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add delete logic here
+                var customer = _services.GetById(id);
+                _services.Remove(customer);
 
                 return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
+
+            return View();
         }
     }
 }

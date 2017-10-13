@@ -11,7 +11,7 @@ namespace CRUD_DDD.MVC.ViewModels
 
         [Required(ErrorMessage = "Preencha o campo Nome.")]
         [MaxLength(100,ErrorMessage = "Máximo {0} caracteres.")]
-        [MinLength(3,ErrorMessage = "Mínimo {0} caracteres.")]
+        [MinLength(3,ErrorMessage = "Mínimo {1} caracteres.")]
         [DisplayName("Nome")]
         public string Name { get; set; }
 
