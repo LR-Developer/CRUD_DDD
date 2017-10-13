@@ -50,7 +50,7 @@ namespace CRUD_DDD.MVC.Controllers
         // GET: Home/Create
         public ActionResult Create()
         {
-            string[] genders = { "Masculino", "Feminino", "Não desejo informar" };
+            string[] genders = { "Masculino", "Feminino", "Outro" };
             ViewBag.Genders = new SelectList(genders);
             return View();
         }
